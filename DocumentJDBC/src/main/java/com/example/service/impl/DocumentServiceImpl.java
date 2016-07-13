@@ -33,4 +33,15 @@ public class DocumentServiceImpl implements DocumentService {
 		return repo.findById(id);
 	}
 
+	@Override
+	public void updateDocument(long id, Document document) {
+		repo.updateDocument(id, document);
+		
+	}
+
+	@Override
+	public void deleteDocument(long id) {
+		repo.deleteDocument(id);
+	}
+
 }

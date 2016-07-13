@@ -1,12 +1,7 @@
 package com.example;
 
-import java.sql.Date;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import com.example.model.Document;
-import com.example.service.DocumentService;
 
 @SpringBootApplication
 public class DocumentJdbcApplication {

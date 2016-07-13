@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	Name: <input type="text" ng-model="document.name" /><br />
+		CreatedOn: <input type="date" ng-model="document.createdOn" /><br />
+		<button ng-click="update(document)">Save</button>
+		<script>
+		var app = angular.module('myApp', []);
+		app.controller('myCtrl', function($scope, $http) {
+			
+			$scope.update = function(document) {
+				$http({
+					method : 'POST',
+					url : "/document/",
+					data : document,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				}).success(function(data) {
+					$scope.getDocs();
+				}).error(function(status,statusText){
+					alert(statusText);
+				})
+			}
+		});
+	</script>
+</body>
+</html>

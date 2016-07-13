@@ -9,6 +9,10 @@ public interface DocumentRepository {
 	Iterable<Document> getDocuments();
 	
 	void addDocument(Document doc);
+	
+	void updateDocument(long id, Document document);
+	
+	void deleteDocument(long id);
 
 	Optional<Document> findById(long id);
 }

@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import java.sql.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Document;
@@ -32,16 +30,26 @@ public class DocumentController {
 		return service.getDocuments();
 	}
 
-	// @RequestMapping(value = "/document", method=RequestMethod.POST)
-	// public void addDocument(@RequestParam(value = "name") String
-	// name,@RequestParam(value = "createdOn") Date createdOn ){
-	// Document document = new Document(name, createdOn);
-	// service.addDocument(document);
-	// }
-
 	@RequestMapping(method = RequestMethod.POST)
-	public void addDocument(@RequestBody Document document) {
-		service.addDocument(document);
+	public ResponseEntity<Object> addDocument(@RequestBody Document document) {
+		try {
+			service.addDocument(document);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception name) {
+			return new ResponseEntity<>(HttpStatus.LENGTH_REQUIRED);
+		}
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Object> updateDocument(@PathVariable("id") long id, @RequestBody Document document) {
+		System.out.println("HERE Controller");
+		try {
+			service.updateDocument(id, document);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception name) {
+			return new ResponseEntity<>(HttpStatus.LENGTH_REQUIRED);
+		}
+
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -50,7 +58,18 @@ public class DocumentController {
 		if (document.isPresent()) {
 			return new ResponseEntity<>(document.get(), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Object> deleteDocument(@PathVariable("id") long id) {
+		System.out.println("Delete Controller");
+		try {
+			service.deleteDocument(id);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception name) {
+			return new ResponseEntity<>(HttpStatus.LENGTH_REQUIRED);
+		}
 	}
 
 }

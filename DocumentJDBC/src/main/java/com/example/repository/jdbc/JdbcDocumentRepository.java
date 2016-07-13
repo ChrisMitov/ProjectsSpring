@@ -1,7 +1,5 @@
 package com.example.repository.jdbc;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,4 +53,20 @@ public class JdbcDocumentRepository implements DocumentRepository {
 		return documents.size() == 1 ? Optional.of(documents.get(0)) : Optional.empty();
 	}
 
+	@Override
+	public void updateDocument(long id, Document document) {
+		Map<String, Object> documentMap = new HashMap<String, Object>();
+		documentMap.put("documentId", id);
+		documentMap.put("name", document.getName());
+		documentMap.put("createdOn", document.getCreatedOn());
+		String sql = "update Document d set d.DOCUMENT_NAME = :name, d.CREATED_ON=:createdOn where d.DOCUMENT_ID = :documentId";
+		temp.update(sql, documentMap);
+	}
+
+	@Override
+	public void deleteDocument(long id) {
+		Map<String, Object> documentMap = new HashMap<String, Object>();
+		documentMap.put("documentId", id);
+		temp.update("delete Document d where d.DOCUMENT_ID = :documentId", documentMap);
+	}
 }

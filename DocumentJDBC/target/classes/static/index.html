@@ -9,15 +9,32 @@
 	<div ng-app="myApp" ng-controller="myCtrl">
 		<button ng-click="getDocs()">get doc</button>
 
-		<div ng-repeat="doc in documents">
+		<div ng-repeat="doc in documents | orderBy : 'name'">
 			<div>
 				<p style="font-size: 80%; color: red; display: inline">{{doc.name}}</p>
 				<p style="font-size: 80%; color: blue; display: inline">{{doc.createdOn}}</p>
+				<button ng-click="form(doc)">Update</button>
+				<div style="display: inline">
+					<button ng-click="delete(doc)">Delete</button>
+				</div>
+				<div ng-show="flag" ng-if="doc.id == selectDocument.id">
+
+					Name: <input type="text" ng-model="selectDocument.name" /><br />
+					CreatedOn: <input type="date" 
+						ng-model="selectDocument.createdOn" /><br />
+					<button ng-click="update2(selectDocument)">Update</button>
+				</div>
+
 			</div>
 		</div>
 		<br /> Name: <input type="text" ng-model="document.name" /><br />
 		CreatedOn: <input type="date" ng-model="document.createdOn" /><br />
 		<button ng-click="update(document)">Save</button>
+		<br /> ID: <input type="number" ng-model="id" /><br />
+		<button ng-click="find(id)">Save</button>
+		<br />
+		<p style="font-size: 80%; color: red; display: inline">{{findDocument.name}}</p>
+		<p style="font-size: 80%; color: blue; display: inline">{{findDocument.createdOn}}</p>
 	</div>
 
 	<script>
@@ -29,6 +46,7 @@
 					$scope.documents = response.data;
 				});
 			}
+			$scope.selectDocument;
 			$scope.update = function(document) {
 				$http({
 					method : 'POST',
@@ -37,7 +55,59 @@
 					headers : {
 						'Content-Type' : 'application/json'
 					}
+				}).success(function(data) {
+					$scope.getDocs();
+					$scope.document.name = "";
+					$scope.document.createdOn = "";
+				}).error(function(status, statusText) {
+					alert(statusText);
 				})
+			}
+			$scope.flag = false;
+			$scope.form = function(document) {
+				if($scope.flag){
+					if($scope.selectDocument.id == document.id){
+						alert("mistake");
+						$scope.flag = !$scope.flag;
+					} else {
+					alert("here");
+					$scope.selectDocument = document;
+					}
+				}  else {
+					alert("tuka");
+					$scope.selectDocument = document;
+					$scope.flag = !$scope.flag;
+				}
+			}
+			$scope.update2 = function(document) {
+				$http({
+					method : 'PUT',
+					url : "/document/" + $scope.selectDocument.id,
+					data : document,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				}).success(function(data) {
+					$scope.flag = !$scope.flag;
+					$scope.getDocs();
+				}).error(function(status, statusText) {
+					alert("Error");
+				})
+			}
+			$scope.findDocument;
+			$scope.find = function(id) {
+				$http.get("/document/" + id).then(function(response) {
+					$scope.id = "";
+					$scope.findDocument = response.data;
+				}, function (response) {
+					alert(response.statusText);
+					$scope.id = "";
+				});
+			}
+			$scope.delete = function(document) {
+				$http.delete("/document/" + document.id).then(function(response) {
+					$scope.getDocs();
+				});
 			}
 		});
 	</script>
