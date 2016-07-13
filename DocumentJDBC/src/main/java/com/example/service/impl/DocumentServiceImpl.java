@@ -1,5 +1,7 @@
 package com.example.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,11 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public void addDocument(Document doc) {
 		repo.addDocument(doc);
+	}
+
+	@Override
+	public Optional<Document> findById(long id) {
+		return repo.findById(id);
 	}
 
 }

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Repository;
 
 import com.example.model.Document;
 import com.example.repository.DocumentRepository;
+import com.example.utils.RowMap;
 
 @Repository
 public class JdbcDocumentRepository implements DocumentRepository {
+	private static final RowMapper<Document> DOCUMENT_ROW_MAPPER = new RowMap();
 	private NamedParameterJdbcTemplate temp;
 
 	@Autowired
@@ -25,16 +28,8 @@ public class JdbcDocumentRepository implements DocumentRepository {
 
 	@Override
 	public Iterable<Document> getDocuments() {
-		List<Document> documents = temp.query("select DOCUMENT_ID, DOCUMENT_NAME,CREATED_ON from DOCUMENT order by DOCUMENT_ID",
-				new RowMapper<Document>() {
-					public Document mapRow(ResultSet rs, int rowNum) throws SQLException {
-						Document document = new Document();
-						document.setId(rs.getLong("DOCUMENT_ID"));
-						document.setName(rs.getString("DOCUMENT_NAME"));
-						document.setCreatedOn(rs.getDate("CREATED_ON"));
-						return document;
-					}
-				});
+		String sql = "select DOCUMENT_ID, DOCUMENT_NAME,CREATED_ON from DOCUMENT order by DOCUMENT_ID";
+		List<Document> documents = temp.query(sql, DOCUMENT_ROW_MAPPER);
 		return documents;
 	}
 
@@ -43,12 +38,21 @@ public class JdbcDocumentRepository implements DocumentRepository {
 		StringBuilder sb = new StringBuilder();
 		sb.append("insert into document (DOCUMENT_ID, DOCUMENT_NAME, CREATED_ON) values ");
 		sb.append("(offerdocs_seq.nextval,:name, :createdOn)");
-		
+
 		Map<String, Object> documentMap = new HashMap<String, Object>();
 		documentMap.put("name", doc.getName());
 		documentMap.put("createdOn", doc.getCreatedOn());
 		temp.update(sb.toString(), documentMap);
-		
+
+	}
+
+	@Override
+	public Optional<Document> findById(long id) {
+		String sql = "select DOCUMENT_ID, DOCUMENT_NAME, CREATED_ON from DOCUMENT d where d.DOCUMENT_ID = :documentId ";
+		Map<String, Object> params = new HashMap<>();
+		params.put("documentId", id);
+		List<Document> documents = temp.query(sql, params, DOCUMENT_ROW_MAPPER);
+		return documents.size() == 1 ? Optional.of(documents.get(0)) : Optional.empty();
 	}
 
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+</head>
+<body>
+
+	<div ng-app="myApp" ng-controller="myCtrl">
+		<button ng-click="getDocs()">get doc</button>
+
+		<div ng-repeat="doc in documents">
+			<div>
+				<p style="font-size: 80%; color: red; display: inline">{{doc.name}}</p>
+				<p style="font-size: 80%; color: blue; display: inline">{{doc.createdOn}}</p>
+			</div>
+		</div>
+		<br /> Name: <input type="text" ng-model="document.name" /><br />
+		CreatedOn: <input type="date" ng-model="document.createdOn" /><br />
+		<button ng-click="update(document)">Save</button>
+	</div>
+
+	<script>
+		var app = angular.module('myApp', []);
+		app.controller('myCtrl', function($scope, $http) {
+			$scope.documents;
+			$scope.getDocs = function() {
+				$http.get("/document").then(function(response) {
+					$scope.documents = response.data;
+				});
+			}
+			$scope.update = function(document) {
+				$http({
+					method : 'POST',
+					url : "/document",
+					data : document,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				})
+			}
+		});
+	</script>
+</body>
+</html>
+
