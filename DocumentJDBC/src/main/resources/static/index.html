@@ -1,116 +1,300 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Document Overview</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script
 	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link
+	href="http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css"
+	rel="stylesheet">
+<style type="text/css">
+.centerdiv {
+	text-align: center;
+	margin: 0 auto;
+	padding-top: 5px;
+}
+
+.spanwidth {
+	width: 10%;
+	font-size: 1.5em;
+}
+
+.well {
+	background: rgb(22, 105, 173);
+}
+</style>
+<script type="text/javascript" src="resources/js/document.js"></script>
 </head>
 <body>
-
 	<div ng-app="myApp" ng-controller="myCtrl">
-		<button ng-click="getDocs()">get doc</button>
+		<div class="row ">
+			<!-- <div style="width: 100%; height: 270px;" ng-hide="hideDocs"> -->
+			<div class="col-md-4 " style="padding-top: 40px;">
+				<div class="col-md-2 "></div>
+				<div class="col-md-7 well center-block" ng-hide="hideDocs">
+					<div class="centerdiv">
+						<span class="label label-danger spanwidth ">New account</span>
+					</div>
+					<br />
+					<div class="for-group has-feedback centerdiv">
+						<!-- style="margin: 0 auto; width: 200px;"> -->
+						<label class="control-label label label-success labelwidth">Name:</label>
+						<input type="text" class="form-control" placeholder="Enter name"
+							ng-model="user.name" /> <i
+							class="glyphicon glyphicon-pencil form-control-feedback "></i>
+					</div>
+					<br />
+					<div class="form-group has-feedback centerdiv">
+						<label class="control-label label label-success labelwidth">Password:</label>
+						<input type="password" class="form-control"
+							placeholder="Enter password" ng-model="user.password" /> <i
+							class="glyphicon glyphicon-lock form-control-feedback"></i> <span
+							class="label label-danger">{{errorUser}}</span>
+					</div>
+					<br />
+					<div class=" form-group has-feedback centerdiv">
+						<select id="mySel" class="form-control">
+							<option ng-repeat="age in rangeAge" ng-selected="user.age"
+								ng-value="user.age" ng-model="user.age">{{age}}</option>
+						</select>
+					</div>
+					<div class="centerdiv">
+						<button type="button" class="btn btn-success"
+							ng-click="register(user)">
+							<span class="glyphicon glyphicon-import"></span> Register
+						</button>
+						<br /> <br /> <span class="label label-success"
+							style="font-size: 1.20em;" ng-show="successUser">Welcome,
+							{{successUser}} !</span>
+					</div>
 
-		<div ng-repeat="doc in documents | orderBy : 'name'">
-			<div>
-				<p style="font-size: 80%; color: red; display: inline">{{doc.name}}</p>
-				<p style="font-size: 80%; color: blue; display: inline">{{doc.createdOn}}</p>
-				<button ng-click="form(doc)">Update</button>
-				<div style="display: inline">
-					<button ng-click="delete(doc)">Delete</button>
 				</div>
-				<div ng-show="flag" ng-if="doc.id == selectDocument.id">
+				<div class="col-md-1"></div>
+			</div>
 
-					Name: <input type="text" ng-model="selectDocument.name" /><br />
-					CreatedOn: <input type="date" 
-						ng-model="selectDocument.createdOn" /><br />
-					<button ng-click="update2(selectDocument)">Update</button>
+			<!-- <div style="position: relative; text-align: center; margin-top: 20px;"> -->
+			<div class="col-md-4 ">
+				<div class="col-md-3"></div>
+				<div class="col-md-7">
+					<div ng-hide="hideDocs" style="padding-top: 40px;">
+						<div class="well center-block"">
+							<div class="form-group has-feedback centerdiv">
+								<!-- style="margin: 0 auto; width: 200px;"> -->
+								<label class="control-label label label-warning">Name:</label> <input
+									type="text" class="form-control" placeholder="Submit name"
+									ng-model="document.name" /> <i
+									class="glyphicon glyphicon-pencil form-control-feedback "></i>
+							</div>
+							<div class="form-group has-feedback centerdiv">
+								<label class="control-label label label-warning">CreatedOn:</label>
+								<input type="date" class="form-control"
+									placeholder="Submit date" ng-model="document.createdOn" /> <i
+									class="glyphicon glyphicon-calendar form-control-feedback"></i>
+							</div>
+							<br />
+							<div class="centerdiv">
+								<button type="button" class="btn btn-success"
+									ng-click="update(document)">
+									<span class="glyphicon glyphicon-pencil"></span> Save
+								</button>
+							</div>
+						</div>
+						<div class="form-group has-feedback centerdiv">
+							<label class="control-label">Search document by id:</label> <input
+								type="number" class="form-control" placeholder="Submit id"
+								ng-model="id" /> <i
+								class="glyphicon glyphicon-search form-control-feedback"></i>
+						</div>
+						<br />
+						<div class="centerdiv">
+							<button type="button" class="btn btn-success" ng-click="find(id)"
+								data-toggle="modal" data-target="#myModal2">
+								<span class="glyphicon glyphicon-search "></span> Search
+							</button>
+						</div>
+					</div>
+					<div class="centerdiv">
+						<div style="position: relative; text-align: center;">
+							<button type="button" class="btn btn-info btn btn-lg"
+								style="margin-top: 20px;" ng-click="clickDocs()"
+								ng-show="flagDocs">Get Documents</button>
+							<button type="button" class="btn btn-info btn btn-lg"
+								style="margin-top: 20px;" ng-click="clickDocs()"
+								ng-hide="flagDocs">Home</button>
+						</div>
+					</div>
+				</div>
+				<!-- <div class="col-sm-1"></div> -->
+			</div>
+			<div class="col-md-4"></div>
+		</div>
+		<div style="clear: both;"></div>
+		<div style="width: 100%;">
+			<div style="float: left; width: 50%; height: auto;"
+				ng-hide="flagDocs">
+				<div style="float: left; width: 50%; text-align: center;">
+					<p style="display: inline; font-size: 200%;">Name</p>
+				</div>
+				<div style="float: right; width: 50%; text-align: center;">
+					<p style="display: inline; font-size: 200%;">Date</p>
 				</div>
 
+				<div ng-repeat="doc in pagedItems[currentPage] | orderBy : 'name'">
+					<div style="width: 100%; height: auto;">
+						<div style="float: left; text-align: center; width: 50%;">
+							<span class="label label-primary">{{doc.name}}</span> <br /> <br />
+							<button type="button" class="btn btn-warning"
+								ng-click="form(doc)" data-toggle="modal" data-target="#myModal">Update</button>
+							<br />
+
+							<div class="modal" id="myModal" role="dialog">
+								<div class="modal-dialog">
+
+									<div class="modal-content">
+										<div class="modal-header" style="padding: 35px 50px;">
+											<button type="button" class="close" data-dismiss="modal">&times;</button>
+											<h4>
+												<span class="glyphicon glyphicon-lock"></span> Update
+											</h4>
+										</div>
+										<div class="modal-body" style="padding: 40px 50px;">
+											<form role="form">
+												<div class="form-group">
+													<label for="usrname"><span
+														class="glyphicon glyphicon-user"></span> Name: </label> <input
+														type="text" class="form-control" id="usrname"
+														ng-model="selectDocument.name">
+												</div>
+												<div class="form-group">
+													<label for="psw"><span
+														class="glyphicon glyphicon-eye-open"></span> Created On:</label> <input
+														type="date" class="form-control" id="psw"
+														ng-model="selectDocument.createdOn">
+												</div>
+												<button type="submit" ng-click="update2(selectDocument)"
+													class="btn btn-success" data-toggle="modal"
+													data-dismiss="modal">
+													<span class="glyphicon glyphicon-ok"></span> Update
+												</button>
+											</form>
+										</div>
+										<div class="modal-footer">
+											<button type="submit"
+												class="btn btn-danger btn-default pull-left"
+												data-toggle="modal" data-dismiss="modal"
+												ng-click="getDocs()">
+												<span class="glyphicon glyphicon-remove"></span> Cancel
+											</button>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<div style="float: right; text-align: center; width: 50%;">
+							<span class="label label-info">{{doc.createdOn}}</span> <br /> <br />
+							<button type="button" class="btn btn-danger btn"
+								ng-click="delete(doc)">Delete</button>
+						</div>
+					</div>
+
+				</div>
+				<div style="clear: both;"></div>
+				<div class="text-center" ng-hide="flagDocs">
+					<ul class="pagination">
+						<li ng-class="{disabled: currentPage == 0}"><a href
+							ng-click="prevPage()">« Prev</a></li>
+						<li ng-repeat="n in range(pagedItems.length)"
+							ng-class="{active: n == currentPage}" ng-click="setPage()"><a
+							href ng-bind="n + 1">1</a></li>
+						<li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+							<a href ng-click="nextPage()">Next »</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<br />
+			<div style="float: right; width: 50%;" ng-show="hideDocs">
+				<div
+					style="position: relative; text-align: center; margin-top: 20px;">
+					<div class="form-group has-feedback"
+						style="margin: 0 auto; width: 200px;">
+						<label class="control-label">Name:</label> <input type="text"
+							class="form-control" placeholder="Submit name"
+							ng-model="document.name" /> <i
+							class="glyphicon glyphicon-pencil form-control-feedback"></i>
+					</div>
+					<div class="form-group has-feedback"
+						style="margin: 0 auto; width: 200px;">
+						<label class="control-label">CreatedOn:</label> <input type="date"
+							class="form-control" placeholder="Submit date"
+							ng-model="document.createdOn" /> <i
+							class="glyphicon glyphicon-calendar form-control-feedback"></i>
+					</div>
+					<br />
+					<button type="button" class="btn btn-success"
+						ng-click="update(document)">
+						<span class="glyphicon glyphicon-pencil"></span> Save
+					</button>
+					<br />
+					<div class="form-group has-feedback"
+						style="margin: 0 auto; width: 200px;">
+						<label class="control-label">Search document by id:</label> <input
+							type="number" class="form-control" placeholder="Submit id"
+							ng-model="id" /> <i
+							class="glyphicon glyphicon-search form-control-feedback"></i>
+					</div>
+					<br />
+					<button type="button" class="btn btn-success" ng-click="find(id)"
+						data-toggle="modal" data-target="#myModal2">
+						<span class="glyphicon glyphicon-search"></span> Search
+					</button>
+					<br />
+				</div>
+			</div>
+			<div id="myModal2" class="modal " role="dialog">
+				<div class="modal-dialog">
+
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div ng-show="flagModalSave">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title"></h4>
+							</div>
+							<div class="modal-body text-center">
+								<p class="bg-primary" class="text-uppercase">Not valid id.</p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+						<div ng-hide="flagModalSave">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Element with ID:{{findDocument.id}}</h4>
+							</div>
+							<div class="modal-body">
+								<p>Document name: {{findDocument.name}}.</p>
+								<p>Document created on: {{findDocument.createdOn}}</p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<br /> Name: <input type="text" ng-model="document.name" /><br />
-		CreatedOn: <input type="date" ng-model="document.createdOn" /><br />
-		<button ng-click="update(document)">Save</button>
-		<br /> ID: <input type="number" ng-model="id" /><br />
-		<button ng-click="find(id)">Save</button>
-		<br />
-		<p style="font-size: 80%; color: red; display: inline">{{findDocument.name}}</p>
-		<p style="font-size: 80%; color: blue; display: inline">{{findDocument.createdOn}}</p>
 	</div>
-
-	<script>
-		var app = angular.module('myApp', []);
-		app.controller('myCtrl', function($scope, $http) {
-			$scope.documents;
-			$scope.getDocs = function() {
-				$http.get("/document").then(function(response) {
-					$scope.documents = response.data;
-				});
-			}
-			$scope.selectDocument;
-			$scope.update = function(document) {
-				$http({
-					method : 'POST',
-					url : "/document",
-					data : document,
-					headers : {
-						'Content-Type' : 'application/json'
-					}
-				}).success(function(data) {
-					$scope.getDocs();
-					$scope.document.name = "";
-					$scope.document.createdOn = "";
-				}).error(function(status, statusText) {
-					alert(statusText);
-				})
-			}
-			$scope.flag = false;
-			$scope.form = function(document) {
-				if($scope.flag){
-					if($scope.selectDocument.id == document.id){
-						alert("mistake");
-						$scope.flag = !$scope.flag;
-					} else {
-					alert("here");
-					$scope.selectDocument = document;
-					}
-				}  else {
-					alert("tuka");
-					$scope.selectDocument = document;
-					$scope.flag = !$scope.flag;
-				}
-			}
-			$scope.update2 = function(document) {
-				$http({
-					method : 'PUT',
-					url : "/document/" + $scope.selectDocument.id,
-					data : document,
-					headers : {
-						'Content-Type' : 'application/json'
-					}
-				}).success(function(data) {
-					$scope.flag = !$scope.flag;
-					$scope.getDocs();
-				}).error(function(status, statusText) {
-					alert("Error");
-				})
-			}
-			$scope.findDocument;
-			$scope.find = function(id) {
-				$http.get("/document/" + id).then(function(response) {
-					$scope.id = "";
-					$scope.findDocument = response.data;
-				}, function (response) {
-					alert(response.statusText);
-					$scope.id = "";
-				});
-			}
-			$scope.delete = function(document) {
-				$http.delete("/document/" + document.id).then(function(response) {
-					$scope.getDocs();
-				});
-			}
-		});
-	</script>
+	<div style="clear: both;"></div>
 </body>
 </html>
 

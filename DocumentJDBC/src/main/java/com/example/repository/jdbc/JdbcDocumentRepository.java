@@ -26,7 +26,7 @@ public class JdbcDocumentRepository implements DocumentRepository {
 
 	@Override
 	public Iterable<Document> getDocuments() {
-		String sql = "select DOCUMENT_ID, DOCUMENT_NAME,CREATED_ON from DOCUMENT order by DOCUMENT_ID";
+		String sql = "select DOCUMENT_ID, DOCUMENT_NAME,CREATED_ON from DOCUMENT order by DOCUMENT_NAME";
 		List<Document> documents = temp.query(sql, DOCUMENT_ROW_MAPPER);
 		return documents;
 	}
